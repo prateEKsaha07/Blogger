@@ -1,7 +1,7 @@
-export const getMe = async (req, res) => {
+const getMe = async (req, res) => {
    try{
     const user = req.user; // Assuming user is set by the auth middleware
-    
+
     res.json({
         _id: user._id,
         username: user.username,
@@ -14,3 +14,7 @@ export const getMe = async (req, res) => {
        res.status(500).json({ message: 'Server error' });
    }
 }
+
+module.exports = {
+    getMe,
+};

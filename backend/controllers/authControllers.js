@@ -1,6 +1,10 @@
-import User from '../models/User.js';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+// import User from '../models/User.js';
+// import bcrypt from 'bcryptjs';
+// import jwt from 'jsonwebtoken';
+
+const User = require('../models/User.js');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 //generate JWT token
 const generateToken = (id) => {
@@ -10,7 +14,7 @@ const generateToken = (id) => {
 };
 
 // Register a new user
-export const registerUser = async ( req, res ) =>{
+const registerUser = async ( req, res ) =>{
     const { username , email , password } = req.body;
 
     try {
@@ -39,7 +43,7 @@ export const registerUser = async ( req, res ) =>{
 }
 
 // Login a user
-export const loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
     const { username, password } = req.body;
     try {
         const user = await User.findOne({ username });
@@ -58,3 +62,9 @@ export const loginUser = async (req, res) => {
         return res.status(500).json({ message: 'Server error' });
     }
 }
+
+module.exports = {
+    registerUser,
+    loginUser,
+    generateToken
+};

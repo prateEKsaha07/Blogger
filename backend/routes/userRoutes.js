@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const { getMe } = require('../controllers/userController');
+const { protect } = require('../middlewares/authMiddlewares');
 
-router.get('/me', Protect , getMe);
+console.log(typeof protect);
+console.log(typeof getMe);
 
-export default router;
+router.get('/me', protect , getMe);
+
+module.exports = router;

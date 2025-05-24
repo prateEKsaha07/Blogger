@@ -5,16 +5,16 @@ const {
     getPostById,
     updatePost,
     deletePost
-} from '../controllers/postControllers';
-import { Protect } from '../middleware/authMiddleware';
+}= require ('../controllers/postControllers');
+const { protect } = require('../middlewares/authMiddlewares');
 
 const router = express.Router();
 
-router.post('/', Protect, createPost); // Create a new post
-router.get('/', Protect, getPosts); // Get all posts
-router.get('/:id', Protect, getPostById); // Get a post by id
-router.put('/:id', Protect, updatePost); // Update a post by id
-router.delete('/:id', Protect, deletePost); // Delete a post by id
+router.post('/', protect, createPost); // Create a new post
+router.get('/', protect, getPosts); // Get all posts
+router.get('/:id', protect, getPostById); // Get a post by id
+router.put('/:id', protect, updatePost); // Update a post by id
+router.delete('/:id', protect, deletePost); // Delete a post by id
 
 module.exports = router;
 // This code defines the routes for managing posts in the application.

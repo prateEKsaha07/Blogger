@@ -4,11 +4,18 @@ const Post = require('../models/Post.js');
 // Create a new post
 const createPost = async (req, res) => {
     try {
+
         const { title, body, image, tags, category } = req.body;
+
+        const imagePath = req.file ? req.file.path : null; // Assuming you're using multer for file uploads
+        if (!title || !body || !imagePath || !tags || !category) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }  
+
         const post = new Post({
             title,
             body,
-            image,
+            image:imagePath,
             tags,
             category,
             user: req.user._id, // Assuming req.user is set by the auth middleware

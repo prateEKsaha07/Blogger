@@ -1,13 +1,10 @@
-import { useNavigate , Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import React, { useState } from 'react';
-
+import { Link } from 'react-router-dom';
 
 export default function Signup() {
-
-
-// const navigate = useNavigate();
-    
+const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username:'',
         email: '',
@@ -52,7 +49,7 @@ export default function Signup() {
                 password: ''
             });
             alert('Registration successful! You can now log in.');
-            // navigate('/login');
+            navigate('/login');
         }catch(err) {
             console.error(err);
             console.error(err.response);
@@ -189,14 +186,11 @@ return (
               Create an account
             </button>
             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-              Already have an account?{" "}
-              <a
-                href="#"
-                className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-              >
-                Login here
-              </a>
-            </p>
+            Already have an account?{" "}
+            <Link to="/login" className="font-medium text-primary-600 hover:underline dark:text-primary-500">
+            Login here
+          </Link>
+          </p>
           </form>
         </div>
       </div>

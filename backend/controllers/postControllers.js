@@ -12,13 +12,15 @@ const createPost = async (req, res) => {
             return res.status(400).json({ message: 'All fields are required' });
         }  
 
+        console.log('req.user:', req.user);
+
         const post = new Post({
             title,
             body,
             image:imagePath,
             tags,
             category,
-            user: req.user._id, // Assuming req.user is set by the auth middleware
+            author: req.user._id, // Assuming req.user is set by the auth middleware
         });
         await post.save();
         res.status(201).json({ message: 'Post created successfully' });
@@ -31,7 +33,7 @@ const createPost = async (req, res) => {
 // Get all posts
 const getPosts = async (req, res) => {
     try {
-        const posts = await Post.find().populate('user', 'username email');
+        const posts = await Post.find().populate('author', 'username email');
         res.status(200).json(posts);
     } catch (error) {
         console.error('Error fetching posts:', error);
@@ -56,22 +58,28 @@ const getPostById = async (req, res) => {
 // Update a post by ID
 const updatePost = async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id);
+        
+        const { id } = req.params;
+        const { title, body, image, tags, category } = req.body;
 
+        const post = await Post.findById(id);
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
         }
-
-        if (post.author.toString() !== req.user._id.toString()) {
+        if (post.author.toString() !== req.user._id.toString()){
             return res.status(401).json({ message: 'Not authorized' });
         }
 
-        const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        });
+        post.title = title || post.title;
+        post.body = body || post.body;
+        post.image = req.file ? req.file.path : post.image; // Update image if a new one is uploaded
+        post.tags = tags || post.tags;
+        post.category = category || post.category;
 
-        res.json(updatedPost);
+        await post.save();
+        console.log('(backend)Post updated:', post);
+        res.status(200).json('updated successfully',post);
+
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -82,20 +90,17 @@ const updatePost = async (req, res) => {
 const deletePost = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
-
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
         }
-
         if (
             post.author.toString() !== req.user._id.toString() &&
             req.user.role !== 'admin'
         ) {
             return res.status(401).json({ message: 'Not authorized' });
         }
-
         await post.deleteOne();
-
+        console.log('(backend)Post deleted:', post);
         res.json({ message: 'Post deleted' });
     } catch (err) {
         res.status(500).json({ message: err.message });

@@ -49,11 +49,12 @@ const loginUser = async (req, res) => {
         const user = await User.findOne({ username });
         if (user && (await bcrypt.compare(password, user.password))) {
             res.status(200).json({
-                _id: user[0]._id,
-                username: user[0].username,
-                email: user[0].email,
+                _id: user._id,
+                username: user.username,
+                email: user.email,
                 token: generateToken(user._id),
             });
+            console.log('(backend)User logged in successfully:', user.username);
         } else {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
